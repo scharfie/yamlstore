@@ -26,42 +26,46 @@ class YamlStore
     @conditions = nil; conditions
   end
   
-  def having(property, value=:any)
-    case value
-    when :any
-      conditions << "record.has_property?(#{property.inspect})"
-    when /^(<|<=|>|>=|!=|=)\s*(\d+\.?\d*)$/ # equality and comparison statements
-      value = "=#{value}" if $1 == '=' # ensure two equal signs (to allow for '= 7.1')
-      conditions << "(Numeric === record.#{property} && record.#{property}.to_f #{value})"
-    when Regexp
-      conditions << "(record.#{property} || '') =~ #{value.inspect}"  
-    when Array
-      conditions << "#{value.inspect}.include?(record.#{property})"
-    else
-      conditions << "record.#{property} == #{value.inspect}"
-    end
+  module EvalBased
+    def having(property, value=:any)
+      case value
+      when :any
+        conditions << "record.has_property?(#{property.inspect})"
+      when /^(<|<=|>|>=|!=|=)\s*(\d+\.?\d*)$/ # equality and comparison statements
+        value = "=#{value}" if $1 == '=' # ensure two equal signs (to allow for '= 7.1')
+        conditions << "(Numeric === record.#{property} && record.#{property}.to_f #{value})"
+      when Regexp
+        conditions << "(record.#{property} || '') =~ #{value.inspect}"  
+      when Array
+        conditions << "#{value.inspect}.include?(record.#{property})"
+      else
+        conditions << "record.#{property} == #{value.inspect}"
+      end
     
-    self  
-  end
+      self  
+    end
   
-  def not_having(property, value=:any)
-    having(property, value)
-    conditions[-1] = "!(#{conditions[-1]})"
-    self
+    def not_having(property, value=:any)
+      having(property, value)
+      conditions[-1] = "!(#{conditions[-1]})"
+      self
+    end
+  
+    def fetch
+      filter = conditions.join(' && ')
+      reset_conditions!
+    
+      records.select do |record|
+        eval(filter)
+      end
+    end
   end
+    
+  include EvalBased unless $YAMLSTORE_BENCHMARK
   
   def each(*args, &block);    fetch.each(*args, &block); end
   def map(*args, &block);     fetch.map(*args, &block); end  
   def collect(*args, &block); fetch.map(*args, &block); end  
-  
-  def fetch
-    filter = conditions.join(' && ')
-    reset_conditions!
-    
-    records.select do |record|
-      eval(filter)
-    end
-  end
   
   class Record < OpenStruct
     def id; key; end
