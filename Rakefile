@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "yaml_store"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = "A simple way to read your YAML files"
+    gem.description = gem.summary
     gem.email = "scharfie@gmail.com"
     gem.homepage = "http://github.com/scharfie/yaml_store"
     gem.authors = ["Chris Scharf"]
@@ -38,7 +38,6 @@ rescue LoadError
 end
 
 task :test => :check_dependencies
-
 task :default => :test
 
 require 'rake/rdoctask'
