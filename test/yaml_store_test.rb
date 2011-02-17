@@ -6,10 +6,31 @@ class YamlStoreTest < Test::Unit::TestCase
     assert_equal expected_keys, actual_keys
   end
 
+  context 'DSL' do
+    should "load test/data/cities.yml" do
+      YamlStore.load_paths = [
+        File.join(File.dirname(__FILE__), "data")
+      ]
+
+      @store = nil
+
+      assert_nothing_raised do
+        @store = YamlStore.from('cities')
+      end
+      
+      assert_equal 3, @store.records.length
+    end
+  end
+
   context 'with hash' do
     setup do
       @store = YamlStore.new(YAML.load(SampleData.hash))
     end
+
+    should "test first" do
+      assert_equal 'A', @store.first.key
+    end
+    
   
     should "test having" do
       assert_keys %w(A C), @store.having(:photo, true)

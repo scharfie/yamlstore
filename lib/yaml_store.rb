@@ -2,6 +2,26 @@ require 'ostruct'
 require 'yaml'
 
 class YamlStore
+  class << self
+    attr_accessor :load_paths
+    
+    def load_paths
+      @load_paths ||= Set.new 
+    end
+
+    def from(key)
+      load_paths.each do |path|
+        filename = File.join(path, key + '.yml')
+
+        if File.exist?(filename)
+          return new(YAML.load(File.read(filename)))
+        end
+      end  
+
+      raise "YamlStore for #{key} not found!"
+    end
+  end
+
   attr_accessor :records
   
   def initialize(yaml)
@@ -51,11 +71,12 @@ class YamlStore
       self
     end
   
-    def fetch
-      filter = conditions.join(' && ')
+    def fetch(all_or_first=:all)
+      filter = conditions.empty?? 'true' : conditions.join(' && ')
       reset_conditions!
     
-      records.select do |record|
+      method = all_or_first == :all ? :select : :detect
+      records.send(method) do |record|
         eval(filter)
       end
     end
@@ -64,8 +85,9 @@ class YamlStore
   include EvalBased unless $YAMLSTORE_BENCHMARK
   
   def each(*args, &block);    fetch.each(*args, &block); end
-  def map(*args, &block);     fetch.map(*args, &block); end  
-  def collect(*args, &block); fetch.map(*args, &block); end  
+  def map(*args, &block);     fetch.map(*args, &block);  end  
+  def collect(*args, &block); fetch.map(*args, &block);  end
+  def first;                  fetch(:first);             end
   
   class Record < OpenStruct
     def id; key; end
