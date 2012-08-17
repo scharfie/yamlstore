@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "yaml_store"
   gem.homepage = "http://github.com/scharfie/yaml_store"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{An experimental datastore using YAML}
+  gem.description = %Q{An experimental datastore using YAML}
   gem.email = "scharfie@gmail.com"
   gem.authors = ["Chris Scharf"]
   # dependencies defined in Gemfile
