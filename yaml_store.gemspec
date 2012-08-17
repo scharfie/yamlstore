@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{yaml_store}
-  s.version = "0.0.0"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chris Scharf"]
@@ -13,19 +13,27 @@ Gem::Specification.new do |s|
   s.description = %q{TODO: longer description of your gem}
   s.email = %q{scharfie@gmail.com}
   s.extra_rdoc_files = [
+    "LICENSE",
     "LICENSE.txt",
     "README.rdoc"
   ]
   s.files = [
     ".document",
     "Gemfile",
+    "Gemfile.lock",
+    "LICENSE",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
     "lib/yaml_store.rb",
+    "lib/yaml_store/block_based.rb",
+    "test/data/cities.yml",
     "test/helper.rb",
-    "test/test_yaml_store.rb"
+    "test/test_helper.rb",
+    "test/test_yaml_store.rb",
+    "test/yaml_store_test.rb",
+    "yaml_store.gemspec"
   ]
   s.homepage = %q{http://github.com/scharfie/yaml_store}
   s.licenses = ["MIT"]
